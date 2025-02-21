@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Question extends Auditable implements Serializable {
+    @Serial
     private static final long serialVersionUID = 4076468265819394259L;
 
     @Id

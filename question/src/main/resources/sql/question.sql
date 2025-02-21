@@ -15,3 +15,13 @@ CREATE TABLE question (
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_by VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE mcq (
+    id BIGSERIAL PRIMARY KEY,
+    question_id BIGINT NOT NULL,
+    option_text TEXT NOT NULL,
+    is_correct BOOLEAN NOT NULL DEFAULT FALSE,
+    score_if_selected INTEGER DEFAULT 0,
+    version INTEGER NOT NULL,
+    CONSTRAINT fk_mcq_question FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE
+);

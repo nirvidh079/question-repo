@@ -1,21 +1,30 @@
 package com.example.question.service;
 
 import com.example.question.dto.QuestionDto;
-import com.example.question.entity.Question;
-import com.example.question.mapper.QuestionMapper;
-import com.example.question.repository.QuestionRepository;
+import com.example.question.helper.QuestionStrategy;
+import com.example.question.helper.QuestionStrategyFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QuestionService {
-    private final QuestionRepository questionRepository;
-    public QuestionService(QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
+
+    private final QuestionStrategyFactory questionStrategyFactory;
+
+    public QuestionService(QuestionStrategyFactory questionStrategyFactory) {
+        this.questionStrategyFactory = questionStrategyFactory;
     }
 
-    public QuestionDto saveQuestion(final QuestionDto questionDto) {
-        Question question = QuestionMapper.toEntity(questionDto);
-        question = questionRepository.save(question);
-        return QuestionMapper.toDto(question);
+    @Transactional(timeout = 300)
+    public String saveQuestion(final QuestionDto questionDto) {
+        String questionType = questionDto.getType();
+        QuestionStrategy strategy = questionStrategyFactory.getStrategy(questionType);
+        if (strategy != null) {
+            strategy.createQuestion(questionDto);
+            return "Question created successfully!";
+        } else {
+            throw new IllegalArgumentException("Invalid Question Type: " + questionType);
+        }
+
     }
 }
